@@ -1,10 +1,10 @@
-# 🏠 Homelab Infrastructure as Code
+#  Homelab Infrastructure as Code
 
 > Self-hosted media, productivity, automation, and networking stack running on **Unraid** (Minisforum MS-01), managed via Docker Compose. Built to demonstrate real-world DevOps practices: multi-stack service orchestration, network segmentation, secret management, and remote access via zero-trust tunneling.
 
 ---
 
-## 📐 Architecture Overview
+##  Architecture Overview
 
 ```
                           Internet
@@ -31,7 +31,7 @@
 
 ---
 
-## 🗂️ Stack Layout
+##  Stack Layout
 
 | Stack | Services | Network |
 |---|---|---|
@@ -44,7 +44,7 @@
 
 ---
 
-## 🌐 Network Topology
+##  Network Topology
 
 | Network | Driver | Subnet | Purpose |
 |---|---|---|---|
@@ -60,7 +60,7 @@
 
 ---
 
-## 📦 Stacks
+##  Stacks
 
 ### Media Stack
 `docker-compose/media-stack/`
@@ -103,7 +103,7 @@ Prowlarr/Jackett ──► Sonarr ──► SABnzbd / qBittorrent
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Unraid 7.x (or any Docker host with `docker compose` v2)
@@ -140,7 +140,7 @@ cd docker-compose/media-stack && docker compose up -d
 
 ---
 
-## 🔐 Secret Management
+##  Secret Management
 
 - **Never commit `.env` files** — `.gitignore` covers them
 - All secrets are injected via environment variables at runtime
@@ -166,7 +166,7 @@ make ps                          # Status of all stacks
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```
 homelab-iac/
