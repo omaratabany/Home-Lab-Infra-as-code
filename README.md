@@ -189,6 +189,10 @@ homelab-iac/
 │   └── utilities/
 │       ├── docker-compose.yml
 │       └── .env.example
+├── tdarr/
+│   ├── flows/
+│   │   └── hevc-qsv-transcode.json
+│   └── README.md
 ├── docs/
 │   ├── architecture.md
 │   └── services.md

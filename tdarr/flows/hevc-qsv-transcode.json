@@ -1,0 +1,79 @@
+{
+  "_id": "hevc-qsv-transcode",
+  "name": "HEVC QSV Transcode",
+  "description": "Transcodes non-HEVC, non-AV1 files to HEVC using Intel Quick Sync (QSV) on i9-12900H. Skips files already in an efficient codec. Replaces original only if output is smaller.",
+  "exportedFlow": {
+    "flow": {
+      "nodes": {
+        "node_input": {
+          "id": "node_input",
+          "type": "Input_File",
+          "label": "Input File",
+          "position": { "x": 0, "y": 0 }
+        },
+        "node_check_av1": {
+          "id": "node_check_av1",
+          "type": "Video_Codec_Check",
+          "label": "Check Video Codec (av1)",
+          "inputs": { "codec": "av1" },
+          "position": { "x": 0, "y": 100 }
+        },
+        "node_check_hevc": {
+          "id": "node_check_hevc",
+          "type": "Video_Codec_Check",
+          "label": "Check Video Codec (hevc)",
+          "inputs": { "codec": "hevc" },
+          "position": { "x": 0, "y": 200 }
+        },
+        "node_ffmpeg_begin": {
+          "id": "node_ffmpeg_begin",
+          "type": "FFmpeg_Command_Begin",
+          "label": "FFmpeg Command: Begin Command",
+          "position": { "x": 0, "y": 300 }
+        },
+        "node_ffmpeg_set_encoder": {
+          "id": "node_ffmpeg_set_encoder",
+          "type": "FFmpeg_Command_Set_Video_Encoder",
+          "label": "FFmpeg Command: Set Video Encoder",
+          "inputs": {
+            "outputCodec": "hevc",
+            "ffmpegPreset": "veryfast",
+            "ffmpegQuality": "28",
+            "hardwareEncoding": true,
+            "hardwareType": "qsv",
+            "hardwareDecoding": true,
+            "forceEncoding": true,
+            "enablePreset": true,
+            "enableQuality": true
+          },
+          "position": { "x": 0, "y": 400 }
+        },
+        "node_ffmpeg_execute": {
+          "id": "node_ffmpeg_execute",
+          "type": "FFmpeg_Command_Execute",
+          "label": "FFmpeg Command: Execute",
+          "position": { "x": 0, "y": 500 }
+        },
+        "node_compare_size": {
+          "id": "node_compare_size",
+          "type": "Compare_File_Size_Ratio",
+          "label": "Compare File Size Ratio",
+          "position": { "x": 0, "y": 600 }
+        },
+        "node_replace": {
+          "id": "node_replace",
+          "type": "Replace_Original_File",
+          "label": "Replace Original File",
+          "position": { "x": 0, "y": 700 }
+        }
+      }
+    }
+  },
+  "_comments": {
+    "quality_note": "ICQ 28 is aggressive for QSV. Recommended: 23-25 for better quality/size balance.",
+    "preset_note": "veryfast preset has minimal effect on QSV — hardware encode speed is fixed by iGPU.",
+    "hardware_note": "Requires /dev/dri passed into Tdarr container and i915 loaded on host.",
+    "skip_logic": "AV1 checked first (more efficient than HEVC), then HEVC — both bail early via dashed/false branch.",
+    "size_guard": "Compare File Size Ratio node protects against bloated transcodes — only replaces if new file is smaller."
+  }
+}
