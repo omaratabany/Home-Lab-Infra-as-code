@@ -1,0 +1,316 @@
+---
+# =============================================================================
+# MEDIA STACK
+# Dual-server setup: Plex + Jellyfin with shared *arr backends
+# Download clients: SABnzbd (Usenet) + qBittorrent (torrent)
+# Indexers: Prowlarr (primary) + Jackett (fallback) + FlareSolverr (CF bypass)
+# Post-processing: Tdarr (QSV transcode), Bazarr (subtitles), Tautulli (stats)
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PLEX MEDIA SERVER
+  # Network: host — required for DLNA multicast + GDM discovery on LAN
+  # ---------------------------------------------------------------------------
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: Plex-Media-Server
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      PLEX_CLAIM: ${PLEX_CLAIM}
+      PLEX_UID: ${PUID:-99}
+      PLEX_GID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      VERSION: latest
+    volumes:
+      - ${APPDATA}/plex:/config
+      - ${MEDIA_PATH}/movies:/movies:ro
+      - ${MEDIA_PATH}/tv:/tv:ro
+      - ${MEDIA_PATH}/music:/music:ro
+      - /tmp/plex-transcode:/transcode
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=plex"
+
+  # ---------------------------------------------------------------------------
+  # JELLYFIN — secondary media server
+  # ---------------------------------------------------------------------------
+  jellyfin:
+    image: binhex/arch-jellyfin:latest
+    container_name: binhex-jellyfin
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/jellyfin:/config
+      - ${MEDIA_PATH}/movies:/movies:ro
+      - ${MEDIA_PATH}/tv:/tv:ro
+    ports:
+      - "8096:8096"
+    devices:
+      - /dev/dri:/dev/dri   # Intel Quick Sync (i9-12900H)
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=jellyfin"
+
+  # ---------------------------------------------------------------------------
+  # SONARR — TV series management
+  # ---------------------------------------------------------------------------
+  sonarr:
+    image: binhex/arch-sonarr:latest
+    container_name: Sonarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/sonarr:/config
+      - ${MEDIA_PATH}/tv:/tv
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - "8989:8989"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=sonarr"
+
+  # ---------------------------------------------------------------------------
+  # RADARR — Movie management
+  # ---------------------------------------------------------------------------
+  radarr:
+    image: binhex/arch-radarr:latest
+    container_name: Radarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/radarr:/config
+      - ${MEDIA_PATH}/movies:/movies
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - "7878:7878"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=radarr"
+
+  # ---------------------------------------------------------------------------
+  # BAZARR — Subtitle automation (Arabic, English, Spanish)
+  # ---------------------------------------------------------------------------
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+    volumes:
+      - ${APPDATA}/bazarr:/config
+      - ${MEDIA_PATH}/movies:/movies
+      - ${MEDIA_PATH}/tv:/tv
+    ports:
+      - "6767:6767"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=bazarr"
+
+  # ---------------------------------------------------------------------------
+  # PROWLARR — Unified indexer manager (feeds Sonarr + Radarr)
+  # ---------------------------------------------------------------------------
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+    volumes:
+      - ${APPDATA}/prowlarr:/config
+    ports:
+      - "9696:9696"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=prowlarr"
+
+  # ---------------------------------------------------------------------------
+  # JACKETT — Fallback indexer proxy
+  # ---------------------------------------------------------------------------
+  jackett:
+    image: binhex/arch-jackett:latest
+    container_name: binhex-jackett
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/jackett:/config
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "9117:9117"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=jackett"
+
+  # ---------------------------------------------------------------------------
+  # FLARESOLVERR — Cloudflare challenge bypass for indexers
+  # ---------------------------------------------------------------------------
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TZ: ${TZ:-Asia/Dubai}
+    ports:
+      - "8191:8191"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=flaresolverr"
+
+  # ---------------------------------------------------------------------------
+  # SABNZBD — Usenet download client
+  # ---------------------------------------------------------------------------
+  sabnzbd:
+    image: binhex/arch-sabnzbd:latest
+    container_name: binhex-sabnzbd
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/sabnzbd:/config
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=sabnzbd"
+
+  # ---------------------------------------------------------------------------
+  # QBITTORRENT — Torrent download client
+  # ---------------------------------------------------------------------------
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      WEBUI_PORT: "8082"
+      TORRENTING_PORT: "6881"
+    volumes:
+      - ${APPDATA}/qbittorrent:/config
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - "8082:8082"
+      - "6881:6881"
+      - "6881:6881/udp"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=qbittorrent"
+
+  # ---------------------------------------------------------------------------
+  # TDARR — Distributed media transcoding (Intel QSV on i9-12900H)
+  # ---------------------------------------------------------------------------
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      serverIP: ${SERVER_IP}
+      nodeIP: ${SERVER_IP}
+      internalNode: "true"
+      nodeID: MyInternalNode
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+    volumes:
+      - ${APPDATA}/tdarr/server:/app/server
+      - ${APPDATA}/tdarr/configs:/app/configs
+      - ${APPDATA}/tdarr/logs:/app/logs
+      - ${MEDIA_PATH}:/media
+      - /tmp/tdarr-transcode:/temp
+    ports:
+      - "8265:8265"   # Web UI
+      - "8266:8266"   # Server
+      - "8267:8267"   # Node
+    devices:
+      - /dev/dri:/dev/dri
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=tdarr"
+
+  # ---------------------------------------------------------------------------
+  # TAUTULLI — Plex analytics + notification agent
+  # ---------------------------------------------------------------------------
+  tautulli:
+    image: tautulli/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+    volumes:
+      - ${APPDATA}/tautulli:/config
+    ports:
+      - "8181:8181"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=tautulli"
+
+  # ---------------------------------------------------------------------------
+  # OVERSEERR (plex-seerr) — Request management for Plex
+  # ---------------------------------------------------------------------------
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: plex-Seerr
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TZ: ${TZ:-Asia/Dubai}
+      PORT: "5055"
+    volumes:
+      - ${APPDATA}/overseerr:/app/config
+    ports:
+      - "5055:5055"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=overseerr"
+
+  # ---------------------------------------------------------------------------
+  # JELLYSEERR — Request management for Jellyfin
+  # ---------------------------------------------------------------------------
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TZ: ${TZ:-Asia/Dubai}
+      JELLYFIN_TYPE: jellyfin
+    volumes:
+      - ${APPDATA}/jellyseerr:/app/config
+    ports:
+      - "5056:5055"
+    labels:
+      - "com.homelab.stack=media"
+      - "com.homelab.service=jellyseerr"

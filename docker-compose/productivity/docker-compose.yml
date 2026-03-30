@@ -1,0 +1,184 @@
+---
+# =============================================================================
+# PRODUCTIVITY STACK
+# AFFiNE  — self-hosted Notion/Miro alternative (Postgres 16 + Redis)
+# NocoDB  — Airtable alternative (SQLite/Postgres backend)
+# NocoBase — low-code app builder (Postgres 16)
+#
+# Each service group runs on its own isolated bridge network to prevent
+# cross-stack database access.
+# =============================================================================
+
+networks:
+  affine_net:
+    name: affine_default
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+  nocobase_net:
+    name: nocobase_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
+
+services:
+
+  # ===========================================================================
+  # AFFINE — Notion + Miro alternative
+  # ===========================================================================
+
+  affine:
+    image: ghcr.io/toeverything/affine-graphql:stable
+    container_name: affine_server
+    restart: unless-stopped
+    depends_on:
+      affine_postgres:
+        condition: service_healthy
+      affine_redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      AFFINE_REVISION: stable
+      AFFINE_INDEXER_ENABLED: "false"
+      DATABASE_URL: postgresql://${AFFINE_DB_USER}:${AFFINE_DB_PASSWORD}@affine_postgres:5432/${AFFINE_DB_NAME}
+      REDIS_SERVER_HOST: affine_redis
+      PORT: "3010"
+      CONFIG_LOCATION: /root/.affine/config
+      UPLOAD_LOCATION: /root/.affine/storage
+    volumes:
+      - ${APPDATA}/affine/config:/root/.affine/config
+      - ${APPDATA}/affine/storage:/root/.affine/storage
+    ports:
+      - "3010:3010"
+    networks:
+      - affine_net
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=affine"
+
+  affine_migration_job:
+    image: ghcr.io/toeverything/affine-graphql:stable
+    container_name: affine_migration_job
+    restart: on-failure
+    depends_on:
+      affine_postgres:
+        condition: service_healthy
+    command: ["node", "dist/index.js", "start", "--initialize-db"]
+    environment:
+      AFFINE_REVISION: stable
+      DATABASE_URL: postgresql://${AFFINE_DB_USER}:${AFFINE_DB_PASSWORD}@affine_postgres:5432/${AFFINE_DB_NAME}
+      REDIS_SERVER_HOST: affine_redis
+      AFFINE_INDEXER_ENABLED: "false"
+    networks:
+      - affine_net
+
+  affine_postgres:
+    image: postgres:16
+    container_name: affine_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${AFFINE_DB_USER}
+      POSTGRES_PASSWORD: ${AFFINE_DB_PASSWORD}
+      POSTGRES_DB: ${AFFINE_DB_NAME}
+      POSTGRES_INITDB_ARGS: --data-checksums
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ${APPDATA}/affine/postgres:/var/lib/postgresql/data
+    networks:
+      - affine_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AFFINE_DB_USER} -d ${AFFINE_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=affine-postgres"
+
+  affine_redis:
+    image: redis:alpine
+    container_name: affine_redis
+    restart: unless-stopped
+    networks:
+      - affine_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=affine-redis"
+
+  # ===========================================================================
+  # NOCODB — Airtable alternative
+  # ===========================================================================
+
+  nocodb:
+    image: nocodb/nocodb:latest
+    container_name: nocodb
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Dubai}
+      NC_TOOL_DIR: /usr/app/data/
+      NODE_ENV: production
+      PORT: "8080"
+    volumes:
+      - ${APPDATA}/nocodb:/usr/app/data
+    ports:
+      - "8085:8080"
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=nocodb"
+
+  # ===========================================================================
+  # NOCOBASE — Low-code app builder
+  # ===========================================================================
+
+  nocobase:
+    image: nocobase/nocobase:latest
+    container_name: nocobase
+    restart: unless-stopped
+    depends_on:
+      nocobase_postgres:
+        condition: service_healthy
+    environment:
+      DB_DIALECT: postgres
+      DB_HOST: nocobase_postgres
+      DB_PORT: "5432"
+      DB_DATABASE: ${NOCOBASE_DB_NAME}
+      DB_USER: ${NOCOBASE_DB_USER}
+      DB_PASSWORD: ${NOCOBASE_DB_PASSWORD}
+    volumes:
+      - ${APPDATA}/nocobase/storage:/app/nocobase/storage
+    ports:
+      - "13000:80"
+    networks:
+      - nocobase_net
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=nocobase"
+
+  nocobase_postgres:
+    image: postgres:16
+    container_name: nocobase_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${NOCOBASE_DB_NAME}
+      POSTGRES_USER: ${NOCOBASE_DB_USER}
+      POSTGRES_PASSWORD: ${NOCOBASE_DB_PASSWORD}
+    volumes:
+      - ${APPDATA}/nocobase/postgres:/var/lib/postgresql/data
+    networks:
+      - nocobase_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${NOCOBASE_DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.homelab.stack=productivity"
+      - "com.homelab.service=nocobase-postgres"

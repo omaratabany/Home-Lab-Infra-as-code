@@ -1,0 +1,75 @@
+---
+# =============================================================================
+# UTILITIES STACK
+# Krusader        — dual-pane file manager (VNC/noVNC)
+# JDownloader2    — HTTP/DDL download manager (VNC/noVNC)
+# VideoDuplicateFinder — GPU-accelerated duplicate media scanner (noVNC)
+# =============================================================================
+
+services:
+
+  krusader:
+    image: binhex/arch-krusader:latest
+    container_name: binhex-krusader
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-99}
+      PGID: ${PGID:-100}
+      TZ: ${TZ:-Asia/Dubai}
+      WEBPAGE_TITLE: Krusader
+      VNC_PASSWORD: ${VNC_PASSWORD:-}
+      TEMP_FOLDER: /config/home/.config/krusader/tmp
+      UMASK: "000"
+    volumes:
+      - ${APPDATA}/krusader:/config
+      - ${MEDIA_PATH}:/media
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - "6080:6080"   # noVNC web
+      - "5901:5900"   # VNC direct
+    labels:
+      - "com.homelab.stack=utilities"
+      - "com.homelab.service=krusader"
+
+  jdownloader2:
+    image: jlesage/jdownloader-2:latest
+    container_name: jDownloader2
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Dubai}
+      UID: ${PUID:-99}
+      GID: ${PGID:-100}
+      UMASK: "000"
+      NOVNC_PORT: "5800"
+      RFB_PORT: "5900"
+    volumes:
+      - ${APPDATA}/jdownloader2:/config
+      - ${DOWNLOADS_PATH}/jdownloader:/output
+    ports:
+      - "5800:5800"   # noVNC web UI
+    labels:
+      - "com.homelab.stack=utilities"
+      - "com.homelab.service=jdownloader2"
+
+  video-duplicate-finder:
+    image: mbunkus/video-duplicate-finder:latest
+    container_name: VideoDuplicateFinder
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Dubai}
+      USER_ID: ${PUID:-99}
+      GROUP_ID: ${PGID:-100}
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
+      WEB_LISTENING_PORT: "5800"
+      VNC_LISTENING_PORT: "5900"
+      DARK_MODE: "0"
+      KEEP_APP_RUNNING: "0"
+    volumes:
+      - ${APPDATA}/videoduplicatefinder:/config
+      - ${MEDIA_PATH}:/storage:ro
+    ports:
+      - "5802:5800"
+    labels:
+      - "com.homelab.stack=utilities"
+      - "com.homelab.service=video-duplicate-finder"

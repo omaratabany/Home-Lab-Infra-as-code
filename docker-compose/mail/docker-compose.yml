@@ -1,0 +1,61 @@
+---
+# =============================================================================
+# MAIL STACK
+# docker-mailserver — production Postfix/Dovecot stack
+#
+# Features enabled:
+#   SpamAssassin  — spam filtering (score threshold: inbox delivery)
+#   ClamAV        — antivirus scanning
+#   Postgrey      — greylisting (300s delay, whitelist after 5 attempts)
+#   ManageSieve   — server-side mail filtering rules
+#   OPENDKIM      — disabled (using Cloudflare Email Routing + DKIM instead)
+#
+# Domain: xxx.com
+# =============================================================================
+
+services:
+
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: Docker-Mailserver
+    restart: unless-stopped
+    hostname: ${MAIL_HOSTNAME}
+    domainname: ${MAIL_DOMAIN}
+    stop_grace_period: 1m
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "25:25"
+      - "143:143"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+      - "4190:4190"    # ManageSieve
+    environment:
+      TZ: ${TZ:-Asia/Dubai}
+      ONE_DIR: "1"
+      OVERRIDE_HOSTNAME: ${MAIL_HOSTNAME}
+      DOMAINNAME: ${MAIL_DOMAIN}
+      POSTMASTER_ADDRESS: postmaster@${MAIL_DOMAIN}
+      POSTFIX_MESSAGE_SIZE_LIMIT: "10240000"    # 10MB
+      SSL_TYPE: ${SSL_TYPE:-letsencrypt}
+      ENABLE_SPAMASSASSIN: "1"
+      SPAMASSASSIN_SPAM_TO_INBOX: "1"
+      ENABLE_CLAMAV: "1"
+      ENABLE_POSTGREY: "1"
+      POSTGREY_DELAY: "300"
+      POSTGREY_MAX_AGE: "35"
+      POSTGREY_AUTO_WHITELIST_CLIENTS: "5"
+      POSTGREY_TEXT: "Delayed by Postgrey"
+      ENABLE_MANAGESIEVE: "1"
+      ENABLE_FAIL2BAN: "0"    # Managed at UniFi/firewall level
+      ENABLE_OPENDKIM: "0"    # Using Cloudflare Email Routing
+    volumes:
+      - ${APPDATA}/mailserver/mail-data:/var/mail
+      - ${APPDATA}/mailserver/mail-state:/var/mail-state
+      - ${APPDATA}/mailserver/mail-logs:/var/log/mail
+      - ${APPDATA}/mailserver/config:/tmp/docker-mailserver
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - "com.homelab.stack=mail"
+      - "com.homelab.service=mailserver"

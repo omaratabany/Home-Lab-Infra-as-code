@@ -1,0 +1,64 @@
+---
+# =============================================================================
+# NETWORKING STACK
+#
+# Cloudflare Tunnel — zero-trust ingress, CGNAT-safe
+#   - No open inbound ports on the router
+#   - Runs on host network to reach all bridge-networked containers
+#   - Routes: *.xxx.com → internal services
+#
+# Unraid Config Guardian — weekly config backup scheduler
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # CLOUDFLARE TUNNEL
+  # Docs: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+  #
+  # Why host network?
+  #   The tunnel daemon proxies requests to services on the bridge network.
+  #   Host networking lets it reach localhost-mapped container ports without
+  #   additional routing rules or a custom bridge network.
+  # ---------------------------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: Unraid-Cloudflared-Tunnel
+    network_mode: host
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN}
+      TUNNEL_LOGLEVEL: ${TUNNEL_LOGLEVEL:-info}
+      TUNNEL_RETRIES: "5"
+      TUNNEL_GRACE_PERIOD: 30s
+      TUNNEL_EDGE_IP_VERSION: auto
+      TUNNEL_TRANSPORT_PROTOCOL: auto
+      # Prometheus metrics endpoint (internal only)
+      TUNNEL_METRICS: "0.0.0.0:${TUNNEL_METRICS_PORT:-46495}"
+      TZ: ${TZ:-Asia/Dubai}
+    labels:
+      - "com.homelab.stack=networking"
+      - "com.homelab.service=cloudflared"
+
+  # ---------------------------------------------------------------------------
+  # UNRAID CONFIG GUARDIAN
+  # Scheduled Unraid config backup (cron: Sun 02:00)
+  # ---------------------------------------------------------------------------
+  unraid-config-guardian:
+    image: unraid-config-guardian:latest   # community image
+    container_name: UnraidConfigGuardian
+    restart: unless-stopped
+    environment:
+      PUID: "0"
+      PGID: "0"
+      TZ: ${TZ:-America/New_York}
+      SCHEDULE: "0 2 * * 0"    # Weekly, Sunday 02:00
+      MASK_PASSWORDS: "true"
+      INCLUDE_SYSTEM_INFO: "true"
+    volumes:
+      - /boot:/boot:ro
+      - ${APPDATA}/config-guardian:/config
+    labels:
+      - "com.homelab.stack=networking"
+      - "com.homelab.service=config-guardian"

@@ -1,0 +1,28 @@
+---
+# =============================================================================
+# AUTOMATION STACK
+# n8n — self-hosted workflow automation (400+ integrations)
+# Webhook URL configured for Cloudflare Tunnel domain
+# =============================================================================
+
+services:
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Dubai}
+      GENERIC_TIMEZONE: ${TZ:-Asia/Dubai}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL}
+      NODE_ENV: production
+      N8N_RELEASE_TYPE: stable
+      # Disable telemetry
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    volumes:
+      - ${APPDATA}/n8n:/home/node/.n8n
+    ports:
+      - "5678:5678"
+    labels:
+      - "com.homelab.stack=automation"
+      - "com.homelab.service=n8n"
