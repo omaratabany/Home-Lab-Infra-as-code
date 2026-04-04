@@ -6,28 +6,7 @@
 
 ##  Architecture Overview
 
-```
-                          Internet
-                              │
-                    ┌─────────▼──────────┐
-                    │  Cloudflare Tunnel  │  (Zero-trust, no open ports)
-                    │  cloudflared        │
-                    └─────────┬──────────┘
-                              │ host network
-              ┌───────────────▼───────────────┐
-              │        Unraid Host             │
-              │    Minisforum MS-01            │
-              │  i9-12900H · 64GB · NVMe       │
-              │  TerraMaster DAS (62TB)        │
-              └──┬────────────┬───────────────┘
-                 │            │
-         ┌───────▼──┐  ┌──────▼────────────────┐
-         │  br0      │  │   bridge 172.17.0.0/16 │
-         │ macvlan   │  │                        │
-         │ 192.168.x │  │  Media · Automation    │
-         └───────────┘  │  Productivity · Mail   │
-                        └───────────────────────┘
-```
+![Infrastructure Diagram](./infra.svg)
 
 ---
 
