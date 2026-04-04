@@ -1,0 +1,212 @@
+<svg viewBox="0 0 860 580" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <defs>
+    <!-- Background grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+    </pattern>
+
+    <!-- Glows -->
+    <filter id="glow-orange" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-blue" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-red" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Arrow markers -->
+    <marker id="arrow-white" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#F38020"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2496ED"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#F15A2C"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="580" fill="#0a0a0a"/>
+  <rect width="860" height="580" fill="url(#grid)"/>
+
+  <!-- Subtle top-left accent line -->
+  <line x1="0" y1="0" x2="860" y2="0" stroke="#F38020" stroke-width="2" opacity="0.4"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- INTERNET NODE -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#soft-shadow)">
+    <rect x="330" y="24" width="200" height="52" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+    <!-- cloud icon bars -->
+    <rect x="348" y="42" width="30" height="3" rx="1.5" fill="#555"/>
+    <rect x="348" y="49" width="22" height="3" rx="1.5" fill="#555"/>
+    <rect x="348" y="56" width="26" height="3" rx="1.5" fill="#555"/>
+    <text x="390" y="45" fill="#888" font-size="9" letter-spacing="2">INTERNET</text>
+    <text x="390" y="60" fill="#444" font-size="8">Public WAN</text>
+  </g>
+
+  <!-- Arrow: Internet → Cloudflare -->
+  <line x1="430" y1="76" x2="430" y2="114" stroke="#F38020" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-orange)" opacity="0.7"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CLOUDFLARE TUNNEL NODE -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-orange)">
+    <rect x="290" y="114" width="280" height="68" rx="6" fill="#111" stroke="#F38020" stroke-width="1.2"/>
+  </g>
+  <!-- CF logo-ish bar -->
+  <rect x="290" y="114" width="6" height="68" rx="3" fill="#F38020" opacity="0.9"/>
+  <text x="312" y="137" fill="#F38020" font-size="10" font-weight="bold" letter-spacing="1.5">CLOUDFLARE TUNNEL</text>
+  <text x="312" y="153" fill="#666" font-size="8.5">cloudflared · Zero-trust egress</text>
+  <text x="312" y="168" fill="#444" font-size="8">No open ports · Encrypted TLS · CGNAT-safe</text>
+
+  <!-- Arrow: Cloudflare → Unraid -->
+  <line x1="430" y1="182" x2="430" y2="224" stroke="#F15A2C" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-red)" opacity="0.7"/>
+  <text x="436" y="207" fill="#333" font-size="7.5" letter-spacing="1">host network</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- UNRAID HOST BOX -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-red)">
+    <rect x="140" y="224" width="580" height="130" rx="8" fill="#0f0f0f" stroke="#F15A2C" stroke-width="1.2"/>
+  </g>
+  <rect x="140" y="224" width="580" height="26" rx="8" fill="#F15A2C" opacity="0.08"/>
+  <rect x="140" y="224" width="6" height="130" rx="3" fill="#F15A2C" opacity="0.9"/>
+
+  <!-- Host header -->
+  <text x="162" y="242" fill="#F15A2C" font-size="10" font-weight="bold" letter-spacing="1.5">UNRAID HOST</text>
+  <text x="440" y="242" fill="#333" font-size="8" letter-spacing="1">MINISFORUM MS-01</text>
+
+  <!-- Spec pills -->
+  <!-- CPU -->
+  <rect x="162" y="254" width="116" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="170" y="268" fill="#aaa" font-size="8">CPU</text>
+  <text x="190" y="268" fill="#666" font-size="8">i9-12900H</text>
+
+  <!-- RAM -->
+  <rect x="286" y="254" width="90" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="294" y="268" fill="#aaa" font-size="8">RAM</text>
+  <text x="315" y="268" fill="#666" font-size="8">64 GB</text>
+
+  <!-- Cache -->
+  <rect x="384" y="254" width="108" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="392" y="268" fill="#aaa" font-size="8">CACHE</text>
+  <text x="424" y="268" fill="#666" font-size="8">NVMe</text>
+
+  <!-- QSV -->
+  <rect x="500" y="254" width="108" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="508" y="268" fill="#4A90D9" font-size="8">QSV</text>
+  <text x="524" y="268" fill="#666" font-size="8">Quick Sync</text>
+
+  <!-- Separator line -->
+  <line x1="162" y1="284" x2="704" y2="284" stroke="#1e1e1e" stroke-width="1"/>
+
+  <!-- Storage section -->
+  <text x="162" y="300" fill="#666" font-size="8" letter-spacing="1">STORAGE</text>
+  <rect x="208" y="289" width="160" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="216" y="303" fill="#aaa" font-size="8">TerraMaster DAS</text>
+  <text x="330" y="303" fill="#555" font-size="8">62 TB</text>
+
+  <rect x="376" y="289" width="120" height="20" rx="3" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="384" y="303" fill="#aaa" font-size="8">LSI LP HBA</text>
+  <text x="446" y="303" fill="#555" font-size="8">JBOD</text>
+
+  <!-- OS row -->
+  <text x="162" y="336" fill="#666" font-size="8" letter-spacing="1">OS</text>
+  <rect x="184" y="322" width="60" height="20" rx="3" fill="#F15A2C" opacity="0.15" stroke="#F15A2C" stroke-width="0.8"/>
+  <text x="194" y="336" fill="#F15A2C" font-size="8">Unraid 7</text>
+
+  <text x="254" y="336" fill="#444" font-size="8">· Docker · VLAN segmentation · Pi-hole · Wazuh / Splunk SIEM</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- NETWORK BRANCHES — two arrows from bottom of host -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Left arrow: br0 macvlan -->
+  <line x1="310" y1="354" x2="230" y2="404" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-blue)" opacity="0.7"/>
+
+  <!-- Right arrow: Docker bridge -->
+  <line x1="560" y1="354" x2="630" y2="404" stroke="#2496ED" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-blue)" opacity="0.7"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LEFT: br0 / macvlan -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-blue)">
+    <rect x="100" y="404" width="260" height="72" rx="6" fill="#0f0f0f" stroke="#0ea5e9" stroke-width="1"/>
+  </g>
+  <rect x="100" y="404" width="6" height="72" rx="3" fill="#0ea5e9" opacity="0.9"/>
+  <text x="120" y="424" fill="#0ea5e9" font-size="9.5" font-weight="bold" letter-spacing="1.5">br0 · macvlan</text>
+  <text x="120" y="440" fill="#555" font-size="8">192.168.x.x / LAN segment</text>
+  <text x="120" y="456" fill="#444" font-size="7.5">UniFi · Pi-hole · Wazuh</text>
+  <text x="120" y="469" fill="#444" font-size="7.5">IoT VLAN · Guest SSID</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- RIGHT: Docker bridge + services -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-blue)">
+    <rect x="500" y="404" width="310" height="72" rx="6" fill="#0f0f0f" stroke="#2496ED" stroke-width="1"/>
+  </g>
+  <rect x="500" y="404" width="6" height="72" rx="3" fill="#2496ED" opacity="0.9"/>
+  <text x="520" y="424" fill="#2496ED" font-size="9.5" font-weight="bold" letter-spacing="1.5">Docker bridge · 172.17.0.0/16</text>
+
+  <!-- Service pills row 1 -->
+  <!-- Plex -->
+  <rect x="520" y="432" width="46" height="16" rx="3" fill="#E5A00D" opacity="0.15" stroke="#E5A00D" stroke-width="0.7"/>
+  <text x="527" y="443" fill="#E5A00D" font-size="7.5">Plex</text>
+  <!-- Jellyfin -->
+  <rect x="572" y="432" width="52" height="16" rx="3" fill="#00A4DC" opacity="0.15" stroke="#00A4DC" stroke-width="0.7"/>
+  <text x="578" y="443" fill="#00A4DC" font-size="7.5">Jellyfin</text>
+  <!-- Radarr -->
+  <rect x="630" y="432" width="48" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="637" y="443" fill="#aaa" font-size="7.5">Radarr</text>
+  <!-- Sonarr -->
+  <rect x="684" y="432" width="48" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="691" y="443" fill="#aaa" font-size="7.5">Sonarr</text>
+  <!-- Tdarr -->
+  <rect x="738" y="432" width="58" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="744" y="443" fill="#aaa" font-size="7.5">Tdarr QSV</text>
+
+  <!-- Service pills row 2 -->
+  <!-- Grafana -->
+  <rect x="520" y="454" width="52" height="16" rx="3" fill="#F46800" opacity="0.15" stroke="#F46800" stroke-width="0.7"/>
+  <text x="527" y="465" fill="#F46800" font-size="7.5">Grafana</text>
+  <!-- Bazarr -->
+  <rect x="578" y="454" width="44" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="585" y="465" fill="#aaa" font-size="7.5">Bazarr</text>
+  <!-- Overseerr -->
+  <rect x="628" y="454" width="60" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="634" y="465" fill="#aaa" font-size="7.5">Overseerr</text>
+  <!-- SABnzbd -->
+  <rect x="694" y="454" width="58" height="16" rx="3" fill="#555" stroke="#444" stroke-width="0.7"/>
+  <text x="700" y="465" fill="#aaa" font-size="7.5">SABnzbd</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LEGEND -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <rect x="20" y="510" width="820" height="52" rx="4" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+  <line x1="36" y1="524" x2="56" y2="524" stroke="#F38020" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="62" y="528" fill="#555" font-size="7.5">Cloudflare tunnel</text>
+  <line x1="172" y1="524" x2="192" y2="524" stroke="#F15A2C" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="198" y="528" fill="#555" font-size="7.5">Host layer</text>
+  <line x1="280" y1="524" x2="300" y2="524" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="306" y="528" fill="#555" font-size="7.5">macvlan / LAN</text>
+  <line x1="404" y1="524" x2="424" y2="524" stroke="#2496ED" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="430" y="528" fill="#555" font-size="7.5">Docker bridge</text>
+
+  <text x="36" y="548" fill="#2a2a2a" font-size="7">Minisforum MS-01 · Unraid · Intel Quick Sync · TerraMaster 62TB · LSI LP HBA · Cloudflare Zero Trust</text>
+
+  <!-- Bottom accent line -->
+  <line x1="0" y1="580" x2="860" y2="580" stroke="#2496ED" stroke-width="1.5" opacity="0.3"/>
+</svg>
