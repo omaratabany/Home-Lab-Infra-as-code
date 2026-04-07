@@ -1,0 +1,31 @@
+---
+# ============================================================
+# deploy-stacks.yml -- Stack deployment only
+# Skips base host provisioning. Use when the host is already
+# configured and you want to (re)deploy one or more stacks.
+#
+# Usage:
+#   ansible-playbook playbooks/deploy-stacks.yml
+#   ansible-playbook playbooks/deploy-stacks.yml --tags arr
+#   make deploy-stack TAGS=arr,monitoring
+# ============================================================
+
+- name: Deploy Docker stacks to Unraid
+  hosts: unraid
+  gather_facts: true
+
+  roles:
+    - role: docker-networks
+      tags: [networks, stacks]
+
+    - role: deploy-arr
+      tags: [arr, stacks]
+
+    - role: deploy-media
+      tags: [media, stacks]
+
+    - role: deploy-network-stack
+      tags: [network-stack, stacks]
+
+    - role: deploy-monitoring
+      tags: [monitoring, stacks]

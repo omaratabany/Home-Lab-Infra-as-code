@@ -1,0 +1,64 @@
+---
+# ============================================================
+# site.yml -- Master playbook
+# Runs the full provisioning pipeline end-to-end.
+#
+# Usage:
+#   ansible-playbook playbooks/site.yml              # Full run
+#   ansible-playbook playbooks/site.yml --tags base  # Base only
+#   ansible-playbook playbooks/site.yml --tags stacks
+#   ansible-playbook playbooks/site.yml --check      # Dry run
+#
+# Or via Makefile:
+#   make deploy
+#   make deploy-stack TAGS=monitoring
+#   make ansible-check
+# ============================================================
+
+- name: Full homelab provisioning pipeline
+  hosts: unraid
+  gather_facts: true
+
+  pre_tasks:
+    - name: Verify Ansible version
+      ansible.builtin.assert:
+        that: "ansible_version.full is version('2.15', '>=')"
+        msg: "Ansible 2.15+ required. Found: {{ ansible_version.full }}"
+      tags: always
+
+    - name: Print target info
+      ansible.builtin.debug:
+        msg: "Target: {{ ansible_hostname }} | OS: {{ ansible_distribution }} {{ ansible_distribution_version }} | Kernel: {{ ansible_kernel }}"
+      tags: always
+
+  roles:
+    - role: unraid-base
+      tags: [base, provision]
+
+    - role: docker-networks
+      tags: [networks, stacks]
+
+    - role: deploy-arr
+      tags: [arr, stacks]
+
+    - role: deploy-media
+      tags: [media, stacks]
+
+    - role: deploy-network-stack
+      tags: [network-stack, stacks]
+
+    - role: deploy-monitoring
+      tags: [monitoring, stacks]
+
+  post_tasks:
+    - name: List running containers
+      ansible.builtin.command:
+        cmd: docker ps --format "{{ '{{' }}.Names{{ '}}' }}\t{{ '{{' }}.Status{{ '}}' }}"
+      register: docker_ps
+      changed_when: false
+      tags: always
+
+    - name: Print container status
+      ansible.builtin.debug:
+        msg: "{{ docker_ps.stdout_lines }}"
+      tags: always

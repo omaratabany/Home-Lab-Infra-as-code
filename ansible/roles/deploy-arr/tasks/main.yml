@@ -1,0 +1,62 @@
+---
+# ============================================================
+# deploy-arr -- arr stack deploy
+# Copies compose file, renders .env from vault vars,
+# pulls images, brings up stack, waits for healthchecks
+# ============================================================
+
+- name: Ensure arr compose directory exists on host
+  ansible.builtin.file:
+    path: "{{ compose_dest }}/arr"
+    state: directory
+    mode: "0750"
+  tags: arr
+
+- name: Copy arr docker-compose.yml to host
+  ansible.builtin.copy:
+    src: "{{ compose_src }}/media-stack/docker-compose.yml"
+    dest: "{{ compose_dest }}/arr/docker-compose.yml"
+    mode: "0640"
+  tags: arr
+
+- name: Render arr .env from template
+  ansible.builtin.template:
+    src: arr.env.j2
+    dest: "{{ compose_dest }}/arr/.env"
+    mode: "0600"
+  no_log: true
+  tags: arr
+
+- name: Pull latest arr images
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/arr"
+    pull: always
+    state: present
+  tags: arr
+
+- name: Bring up arr stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/arr"
+    state: present
+    remove_orphans: true
+  tags: arr
+
+- name: Wait for Radarr to become healthy
+  ansible.builtin.uri:
+    url: "http://{{ ansible_host }}:7878/api/v3/health?apikey={{ radarr_api_key }}"
+    status_code: 200
+  register: radarr_health
+  until: radarr_health.status == 200
+  retries: 12
+  delay: 10
+  tags: [arr, healthcheck]
+
+- name: Wait for Sonarr to become healthy
+  ansible.builtin.uri:
+    url: "http://{{ ansible_host }}:8989/api/v3/health?apikey={{ sonarr_api_key }}"
+    status_code: 200
+  register: sonarr_health
+  until: sonarr_health.status == 200
+  retries: 12
+  delay: 10
+  tags: [arr, healthcheck]

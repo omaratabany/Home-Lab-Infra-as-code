@@ -1,0 +1,13 @@
+---
+# ============================================================
+# docker-networks -- Create all external Docker networks
+# Idempotent: existing networks are left unchanged
+# ============================================================
+
+- name: Create external Docker networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    driver: "{{ item.driver | default('bridge') }}"
+    state: present
+  loop: "{{ docker_networks }}"
+  tags: networks

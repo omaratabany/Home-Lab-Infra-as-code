@@ -1,0 +1,28 @@
+---
+# ============================================================
+# Shared variables -- apply to all hosts
+# ============================================================
+
+tz:             "Asia/Dubai"
+puid:           99
+pgid:           100
+
+data_root:      /mnt/nas
+config_root:    /mnt/user/appdata
+downloads_root: /mnt/user/downloads
+compose_dest:   /mnt/user/compose
+
+domain: "your-domain"
+
+# Path to docker-compose stacks on the Ansible controller
+compose_src: "{{ playbook_dir }}/../../docker-compose"
+
+docker_networks:
+  - name: proxy_net
+    driver: bridge
+  - name: media_net
+    driver: bridge
+  - name: monitoring_net
+    driver: bridge
+  - name: dns_net
+    driver: bridge

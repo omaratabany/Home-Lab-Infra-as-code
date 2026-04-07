@@ -1,0 +1,63 @@
+---
+# ============================================================
+# deploy-network-stack -- Pi-hole and Cloudflare Tunnel
+# Pi-hole must be healthy before cloudflared starts
+# ============================================================
+
+- name: Ensure network compose directory exists on host
+  ansible.builtin.file:
+    path: "{{ compose_dest }}/network"
+    state: directory
+    mode: "0750"
+  tags: network-stack
+
+- name: Copy network docker-compose.yml to host
+  ansible.builtin.copy:
+    src: "{{ compose_src }}/networking/docker-compose.yml"
+    dest: "{{ compose_dest }}/network/docker-compose.yml"
+    mode: "0640"
+  tags: network-stack
+
+- name: Render network .env from template
+  ansible.builtin.template:
+    src: network.env.j2
+    dest: "{{ compose_dest }}/network/.env"
+    mode: "0600"
+  no_log: true
+  tags: network-stack
+
+- name: Check if port 53 is already bound
+  ansible.builtin.command: ss -lnup sport = :53
+  register: port53_check
+  changed_when: false
+  tags: network-stack
+
+- name: Warn if port 53 conflict detected
+  ansible.builtin.debug:
+    msg: "WARNING: Port 53 may already be in use. Check for a conflicting DNS service on the host."
+  when: "'53' in port53_check.stdout"
+  tags: network-stack
+
+- name: Pull latest network stack images
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/network"
+    pull: always
+    state: present
+  tags: network-stack
+
+- name: Bring up network stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/network"
+    state: present
+    remove_orphans: true
+  tags: network-stack
+
+- name: Wait for Pi-hole DNS to respond
+  ansible.builtin.command:
+    cmd: "dig +short +time=2 pi.hole @{{ ansible_host }}"
+  register: pihole_dig
+  until: pihole_dig.rc == 0
+  retries: 10
+  delay: 8
+  changed_when: false
+  tags: [network-stack, healthcheck]

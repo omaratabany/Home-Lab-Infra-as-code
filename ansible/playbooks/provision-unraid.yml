@@ -1,0 +1,18 @@
+---
+# ============================================================
+# provision-unraid.yml -- Base host provisioning only
+# Run on a fresh Unraid install before deploying stacks,
+# or to re-apply host configuration changes.
+#
+# Usage:
+#   ansible-playbook playbooks/provision-unraid.yml
+#   make provision
+# ============================================================
+
+- name: Provision Unraid base configuration
+  hosts: unraid
+  gather_facts: true
+
+  roles:
+    - role: unraid-base
+      tags: [base, provision]

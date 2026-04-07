@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docker-compose/**"
+      - "ansible/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "docker-compose/**"
+      - "ansible/**"
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Validate all Docker Compose stacks
+  # ---------------------------------------------------------------------------
+  compose-validate:
+    name: Validate Compose Stacks
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        stack:
+          - media-stack
+          - productivity
+          - automation
+          - networking
+          - monitoring
+          - mail
+          - utilities
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create stub .env for ${{ matrix.stack }}
+        run: |
+          if [ -f "docker-compose/${{ matrix.stack }}/.env.example" ]; then
+            grep -E '^[A-Z_]+=' docker-compose/${{ matrix.stack }}/.env.example \
+              | sed 's/=.*/=STUB/' \
+              > docker-compose/${{ matrix.stack }}/.env
+          else
+            touch docker-compose/${{ matrix.stack }}/.env
+          fi
+
+      - name: Validate ${{ matrix.stack }}
+        run: |
+          docker compose \
+            -f docker-compose/${{ matrix.stack }}/docker-compose.yml \
+            --env-file docker-compose/${{ matrix.stack }}/.env \
+            config --quiet
+
+  # ---------------------------------------------------------------------------
+  # Lint Ansible playbooks and roles
+  # ---------------------------------------------------------------------------
+  ansible-lint:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ansible and lint
+        run: pip install ansible ansible-lint
+
+      - name: Install Galaxy collections
+        run: |
+          ansible-galaxy collection install -r ansible/requirements.yml
+
+      - name: Stub vault password
+        run: echo "stub" > .vault_pass
+
+      - name: Strip vault blocks for lint
+        run: |
+          find ansible/inventory/group_vars -name "*.yml" | xargs sed -i \
+            '/!vault/,/^[^ ]/{ /!vault/d; /\$ANSIBLE_VAULT/d; /AES256/d; /Replace with/d }'
+
+      - name: Run ansible-lint
+        run: ansible-lint ansible/playbooks/site.yml
+
+  # ---------------------------------------------------------------------------
+  # Syntax check all playbooks
+  # ---------------------------------------------------------------------------
+  ansible-syntax:
+    name: Ansible Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Install Galaxy collections
+        run: ansible-galaxy collection install -r ansible/requirements.yml
+
+      - name: Syntax check all playbooks
+        run: |
+          for pb in ansible/playbooks/*.yml; do
+            echo "Checking $pb"
+            ansible-playbook "$pb" --syntax-check -i ansible/inventory/hosts.yml
+          done

@@ -1,0 +1,76 @@
+---
+# ============================================================
+# deploy-monitoring -- Prometheus, Grafana, Node Exporter,
+#                      cAdvisor, Uptime Kuma
+# ============================================================
+
+- name: Ensure monitoring compose directory exists on host
+  ansible.builtin.file:
+    path: "{{ compose_dest }}/monitoring"
+    state: directory
+    mode: "0750"
+  tags: monitoring
+
+- name: Ensure Prometheus config directory exists
+  ansible.builtin.file:
+    path: "{{ config_root }}/prometheus"
+    state: directory
+    mode: "0755"
+  tags: monitoring
+
+- name: Deploy Prometheus scrape config
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ config_root }}/prometheus/prometheus.yml"
+    mode: "0644"
+  notify: Reload Prometheus config
+  tags: monitoring
+
+- name: Copy monitoring docker-compose.yml to host
+  ansible.builtin.copy:
+    src: "{{ compose_src }}/monitoring/docker-compose.yml"
+    dest: "{{ compose_dest }}/monitoring/docker-compose.yml"
+    mode: "0640"
+  tags: monitoring
+
+- name: Render monitoring .env from template
+  ansible.builtin.template:
+    src: monitoring.env.j2
+    dest: "{{ compose_dest }}/monitoring/.env"
+    mode: "0600"
+  no_log: true
+  tags: monitoring
+
+- name: Pull latest monitoring images
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/monitoring"
+    pull: always
+    state: present
+  tags: monitoring
+
+- name: Bring up monitoring stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/monitoring"
+    state: present
+    remove_orphans: true
+  tags: monitoring
+
+- name: Wait for Prometheus to become healthy
+  ansible.builtin.uri:
+    url: "http://{{ ansible_host }}:9090/-/healthy"
+    status_code: 200
+  register: prom_health
+  until: prom_health.status == 200
+  retries: 12
+  delay: 10
+  tags: [monitoring, healthcheck]
+
+- name: Wait for Grafana to become healthy
+  ansible.builtin.uri:
+    url: "http://{{ ansible_host }}:3000/api/health"
+    status_code: 200
+  register: grafana_health
+  until: grafana_health.status == 200
+  retries: 12
+  delay: 10
+  tags: [monitoring, healthcheck]

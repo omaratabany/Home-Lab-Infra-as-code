@@ -1,0 +1,89 @@
+---
+# ============================================================
+# unraid-base -- Base host configuration
+# ============================================================
+
+- name: Ensure appdata directories exist
+  ansible.builtin.file:
+    path: "{{ config_root }}/{{ item }}"
+    state: directory
+    owner: "{{ puid }}"
+    group: "{{ pgid }}"
+    mode: "0755"
+  loop:
+    - radarr
+    - sonarr
+    - bazarr
+    - sabnzbd
+    - jellyseerr
+    - plex
+    - jellyfin
+    - tdarr/server
+    - tdarr/configs
+    - tdarr/logs
+    - pihole/etc-pihole
+    - pihole/etc-dnsmasq
+    - prometheus
+    - grafana
+    - uptime-kuma
+  tags: base
+
+- name: Ensure compose destination directories exist
+  ansible.builtin.file:
+    path: "{{ compose_dest }}/{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - arr
+    - media
+    - network
+    - monitoring
+  tags: base
+
+- name: Apply sysctl tuning
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: true
+  loop: "{{ sysctl_settings | dict2items }}"
+  tags: base
+
+- name: Configure SSH -- disable password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  notify: Restart sshd
+  tags: [base, ssh]
+
+- name: Configure SSH -- key-only root login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin prohibit-password"
+  notify: Restart sshd
+  tags: [base, ssh]
+
+- name: Configure Docker daemon log rotation
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        },
+        "storage-driver": "overlay2"
+      }
+    mode: "0644"
+  notify: Restart Docker
+  tags: base
+
+- name: Ensure transcode scratch directory exists
+  ansible.builtin.file:
+    path: /tmp/tdarr_cache
+    state: directory
+    mode: "0777"
+  tags: base

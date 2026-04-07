@@ -1,0 +1,57 @@
+---
+# ============================================================
+# Unraid host variables
+# All secrets use Ansible Vault inline encryption.
+#
+# To encrypt a value:
+#   ansible-vault encrypt_string 'your-value' --name 'var_name'
+# Paste the output block below, replacing the placeholder.
+# ============================================================
+
+# --- Cloudflare Tunnel ---
+cf_tunnel_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  # Replace: ansible-vault encrypt_string 'your-token' --name 'cf_tunnel_token'
+
+# --- Pi-hole ---
+pihole_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  # Replace: ansible-vault encrypt_string 'your-password' --name 'pihole_password'
+
+pihole_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+upstream_dns_1: "1.1.1.1"
+upstream_dns_2: "8.8.8.8"
+
+# --- arr API keys ---
+radarr_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+sonarr_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+sabnzbd_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+jellyseerr_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+# --- Media ---
+plex_claim_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+jellyfin_api_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+# --- Monitoring ---
+grafana_admin_user:     admin
+grafana_admin_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+
+# --- sysctl tuning ---
+sysctl_settings:
+  net.core.rmem_max: 134217728
+  net.core.wmem_max: 134217728
+  vm.swappiness: 10
+  fs.inotify.max_user_watches: 524288

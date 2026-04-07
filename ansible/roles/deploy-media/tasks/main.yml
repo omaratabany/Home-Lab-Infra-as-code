@@ -1,0 +1,62 @@
+---
+# ============================================================
+# deploy-media -- Plex, Jellyfin, Tdarr (Intel QSV)
+# ============================================================
+
+- name: Ensure media compose directory exists on host
+  ansible.builtin.file:
+    path: "{{ compose_dest }}/media"
+    state: directory
+    mode: "0750"
+  tags: media
+
+- name: Copy media docker-compose.yml to host
+  ansible.builtin.copy:
+    src: "{{ compose_src }}/media-stack/docker-compose.yml"
+    dest: "{{ compose_dest }}/media/docker-compose.yml"
+    mode: "0640"
+  tags: media
+
+- name: Render media .env from template
+  ansible.builtin.template:
+    src: media.env.j2
+    dest: "{{ compose_dest }}/media/.env"
+    mode: "0600"
+  no_log: true
+  tags: media
+
+- name: Check Intel QSV device is present
+  ansible.builtin.stat:
+    path: /dev/dri/renderD128
+  register: qsv_device
+  tags: media
+
+- name: Warn if QSV device not found
+  ansible.builtin.debug:
+    msg: "WARNING: /dev/dri/renderD128 not found -- Tdarr will fall back to CPU transcoding"
+  when: not qsv_device.stat.exists
+  tags: media
+
+- name: Pull latest media images
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/media"
+    pull: always
+    state: present
+  tags: media
+
+- name: Bring up media stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_dest }}/media"
+    state: present
+    remove_orphans: true
+  tags: media
+
+- name: Wait for Jellyfin to become healthy
+  ansible.builtin.uri:
+    url: "http://{{ ansible_host }}:8096/health"
+    status_code: 200
+  register: jf_health
+  until: jf_health.status == 200
+  retries: 15
+  delay: 10
+  tags: [media, healthcheck]

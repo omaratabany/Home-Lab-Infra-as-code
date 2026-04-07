@@ -1,0 +1,24 @@
+# =============================================================================
+# CRITICAL: Never commit actual .env files — they contain secrets
+# =============================================================================
+**/.env
+!**/.env.example
+
+# Sensitive config directories (if accidentally cloned to appdata)
+**/config/
+**/data/
+**/logs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary
+*.tmp
+*.bak
