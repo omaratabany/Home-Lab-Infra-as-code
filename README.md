@@ -133,7 +133,7 @@ openssl rand -base64 32
 
 ---
 
-## 🛠️ Makefile Commands
+## Makefile Commands
 
 ```bash
 make up    STACK=media-stack     # Start a stack
@@ -185,6 +185,6 @@ homelab-iac/
 
 ---
 
-## 📄 License
+## License
 
 MIT — feel free to use as a reference for your own homelab IaC setup.
