@@ -1,0 +1,303 @@
+<svg viewBox="0 0 1080 565" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+    </pattern>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-orange" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="565" fill="#0a0a0a"/>
+  <rect width="1080" height="565" fill="url(#grid)"/>
+  <line x1="0" y1="0" x2="1080" y2="0" stroke="#2496ED" stroke-width="2" opacity="0.4"/>
+
+  <!-- ═══ TITLE ═══ -->
+  <g filter="url(#soft-shadow)">
+    <rect x="230" y="18" width="620" height="46" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  </g>
+  <rect x="248" y="33" width="24" height="3" rx="1.5" fill="#444"/>
+  <rect x="248" y="40" width="18" height="3" rx="1.5" fill="#444"/>
+  <rect x="248" y="47" width="22" height="3" rx="1.5" fill="#444"/>
+  <text x="286" y="39" fill="#ccc" font-size="10" font-weight="bold" letter-spacing="2">HOME-LAB-INFRA-AS-CODE</text>
+  <text x="286" y="55" fill="#444" font-size="8">github.com/omaratabany/Home-Lab-Infra-as-code</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- DOCKER-COMPOSE PANEL  x=20 y=76 w=302 h=408   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-blue)">
+    <rect x="20" y="76" width="302" height="408" rx="8" fill="#0f0f0f" stroke="#2496ED" stroke-width="1.2"/>
+  </g>
+  <rect x="20" y="76" width="302" height="24" rx="8" fill="#2496ED" opacity="0.06"/>
+  <rect x="20" y="76" width="6" height="408" rx="3" fill="#2496ED" opacity="0.9"/>
+  <text x="42" y="95" fill="#2496ED" font-size="10" font-weight="bold" letter-spacing="1.5">DOCKER-COMPOSE/</text>
+
+  <!-- Row 1: media-stack (sep y=104) -->
+  <line x1="38" y1="104" x2="310" y2="104" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="117" fill="#555" font-size="7.5" letter-spacing="0.5">media-stack/</text>
+  <rect x="42" y="123" width="28" height="13" rx="2" fill="#E5A00D" opacity="0.15" stroke="#E5A00D" stroke-width="0.7"/>
+  <text x="46" y="133" fill="#E5A00D" font-size="6.5">Plex</text>
+  <rect x="76" y="123" width="42" height="13" rx="2" fill="#00A4DC" opacity="0.15" stroke="#00A4DC" stroke-width="0.7"/>
+  <text x="80" y="133" fill="#00A4DC" font-size="6.5">Jellyfin</text>
+  <rect x="124" y="123" width="24" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="128" y="133" fill="#888" font-size="6.5">arr+</text>
+  <rect x="154" y="123" width="50" height="13" rx="2" fill="#4A90D9" opacity="0.15" stroke="#4A90D9" stroke-width="0.7"/>
+  <text x="158" y="133" fill="#4A90D9" font-size="6.5">Tdarr·QSV</text>
+  <rect x="210" y="123" width="42" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="214" y="133" fill="#888" font-size="6.5">Tautulli</text>
+
+  <!-- Row 2: productivity (sep y=158) -->
+  <line x1="38" y1="158" x2="310" y2="158" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="171" fill="#555" font-size="7.5" letter-spacing="0.5">productivity/</text>
+  <rect x="42" y="177" width="38" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="46" y="187" fill="#888" font-size="6.5">AFFiNE</text>
+  <rect x="86" y="177" width="40" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="90" y="187" fill="#888" font-size="6.5">NocoDB</text>
+  <rect x="132" y="177" width="50" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="136" y="187" fill="#888" font-size="6.5">NocoBase</text>
+
+  <!-- Row 3: automation (sep y=212) -->
+  <line x1="38" y1="212" x2="310" y2="212" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="225" fill="#555" font-size="7.5" letter-spacing="0.5">automation/</text>
+  <rect x="42" y="231" width="22" height="13" rx="2" fill="#ea4b71" opacity="0.2" stroke="#ea4b71" stroke-width="0.7"/>
+  <text x="46" y="241" fill="#ea4b71" font-size="6.5">n8n</text>
+
+  <!-- Row 4: networking (sep y=266) -->
+  <line x1="38" y1="266" x2="310" y2="266" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="279" fill="#555" font-size="7.5" letter-spacing="0.5">networking/</text>
+  <rect x="42" y="285" width="58" height="13" rx="2" fill="#F38020" opacity="0.15" stroke="#F38020" stroke-width="0.7"/>
+  <text x="46" y="295" fill="#F38020" font-size="6.5">CF Tunnel</text>
+  <rect x="106" y="285" width="94" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="110" y="295" fill="#888" font-size="6.5">Config Guardian</text>
+
+  <!-- Row 5: monitoring (sep y=320) -->
+  <line x1="38" y1="320" x2="310" y2="320" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="333" fill="#555" font-size="7.5" letter-spacing="0.5">monitoring/</text>
+  <rect x="42" y="339" width="52" height="13" rx="2" fill="#E6522C" opacity="0.15" stroke="#E6522C" stroke-width="0.7"/>
+  <text x="46" y="349" fill="#E6522C" font-size="6.5">Prometheus</text>
+  <rect x="100" y="339" width="42" height="13" rx="2" fill="#F46800" opacity="0.15" stroke="#F46800" stroke-width="0.7"/>
+  <text x="104" y="349" fill="#F46800" font-size="6.5">Grafana</text>
+  <rect x="148" y="339" width="50" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="152" y="349" fill="#888" font-size="6.5">Node Exp.</text>
+  <rect x="204" y="339" width="64" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="208" y="349" fill="#888" font-size="6.5">Uptime Kuma</text>
+
+  <!-- Row 6: mail (sep y=374) -->
+  <line x1="38" y1="374" x2="310" y2="374" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="387" fill="#555" font-size="7.5" letter-spacing="0.5">mail/</text>
+  <rect x="42" y="393" width="82" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="46" y="403" fill="#888" font-size="6.5">Docker Mailserver</text>
+  <text x="130" y="403" fill="#333" font-size="6.5"> · Postfix/Dovecot</text>
+
+  <!-- Row 7: utilities (sep y=428) -->
+  <line x1="38" y1="428" x2="310" y2="428" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="42" y="441" fill="#555" font-size="7.5" letter-spacing="0.5">utilities/</text>
+  <rect x="42" y="447" width="50" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="46" y="457" fill="#888" font-size="6.5">Krusader</text>
+  <rect x="98" y="447" width="60" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="102" y="457" fill="#888" font-size="6.5">JDownloader2</text>
+  <rect x="164" y="447" width="58" height="13" rx="2" fill="#444" stroke="#333" stroke-width="0.7"/>
+  <text x="168" y="457" fill="#888" font-size="6.5">Vid Dedup</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ANSIBLE PANEL  x=336 y=76 w=346 h=408         -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-red)">
+    <rect x="336" y="76" width="346" height="408" rx="8" fill="#0f0f0f" stroke="#F15A2C" stroke-width="1.2"/>
+  </g>
+  <rect x="336" y="76" width="346" height="24" rx="8" fill="#F15A2C" opacity="0.06"/>
+  <rect x="336" y="76" width="6" height="408" rx="3" fill="#F15A2C" opacity="0.9"/>
+  <text x="358" y="95" fill="#F15A2C" font-size="10" font-weight="bold" letter-spacing="1.5">ANSIBLE/</text>
+
+  <!-- Root files -->
+  <line x1="354" y1="104" x2="670" y2="104" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="358" y="118" fill="#2a2a2a" font-size="7.5">├──</text>
+  <rect x="382" y="109" width="66" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="386" y="119" fill="#555" font-size="6.5">ansible.cfg</text>
+  <text x="454" y="118" fill="#2a2a2a" font-size="7.5">├──</text>
+  <rect x="478" y="109" width="84" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="482" y="119" fill="#555" font-size="6.5">requirements.yml</text>
+
+  <!-- inventory/ -->
+  <line x1="354" y1="131" x2="670" y2="131" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="358" y="146" fill="#2a2a2a" font-size="7.5">├──</text>
+  <text x="382" y="146" fill="#aaa" font-size="8.5" font-weight="bold">inventory/</text>
+  <text x="370" y="162" fill="#222" font-size="7.5">│  ├──</text>
+  <rect x="420" y="153" width="56" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="424" y="163" fill="#555" font-size="6.5">hosts.yml</text>
+  <text x="370" y="178" fill="#222" font-size="7.5">│  └──</text>
+  <text x="414" y="178" fill="#777" font-size="7.5">group_vars/</text>
+  <text x="384" y="194" fill="#1e1e1e" font-size="7.5">│     ├──</text>
+  <rect x="440" y="185" width="34" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="444" y="195" fill="#555" font-size="6.5">all.yml</text>
+  <text x="480" y="194" fill="#2a2a2a" font-size="6.5">paths · PUID/PGID · TZ · domain</text>
+  <text x="384" y="210" fill="#1e1e1e" font-size="7.5">│     └──</text>
+  <rect x="440" y="201" width="68" height="13" rx="2" fill="#1e1e1e" stroke="#F15A2C" stroke-width="0.5" opacity="0.8"/>
+  <text x="444" y="211" fill="#F15A2C" font-size="6.5">unraid.yml</text>
+  <text x="514" y="210" fill="#F15A2C" font-size="5.5" opacity="0.7">&#x2605;vault</text>
+  <text x="548" y="210" fill="#2a2a2a" font-size="6.5">host vars + secrets</text>
+
+  <!-- playbooks/ -->
+  <line x1="354" y1="224" x2="670" y2="224" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="358" y="239" fill="#2a2a2a" font-size="7.5">├──</text>
+  <text x="382" y="239" fill="#aaa" font-size="8.5" font-weight="bold">playbooks/</text>
+  <text x="370" y="255" fill="#222" font-size="7.5">│  ├──</text>
+  <rect x="420" y="246" width="42" height="13" rx="2" fill="#1e1e1e" stroke="#F15A2C" stroke-width="0.5" opacity="0.7"/>
+  <text x="424" y="256" fill="#F15A2C" font-size="6.5">site.yml</text>
+  <text x="468" y="255" fill="#2a2a2a" font-size="6.5">master provisioning pipeline</text>
+  <text x="370" y="271" fill="#222" font-size="7.5">│  ├──</text>
+  <rect x="420" y="262" width="108" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="424" y="272" fill="#555" font-size="6.5">provision-unraid.yml</text>
+  <text x="534" y="271" fill="#2a2a2a" font-size="6.5">base host only</text>
+  <text x="370" y="287" fill="#222" font-size="7.5">│  └──</text>
+  <rect x="420" y="278" width="96" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="424" y="288" fill="#555" font-size="6.5">deploy-stacks.yml</text>
+  <text x="522" y="287" fill="#2a2a2a" font-size="6.5">stacks only</text>
+
+  <!-- roles/ -->
+  <line x1="354" y1="300" x2="670" y2="300" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="358" y="315" fill="#2a2a2a" font-size="7.5">└──</text>
+  <text x="382" y="315" fill="#aaa" font-size="8.5" font-weight="bold">roles/</text>
+  <text x="370" y="331" fill="#222" font-size="7.5">   ├──</text>
+  <rect x="414" y="322" width="72" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="418" y="332" fill="#666" font-size="6.5">unraid-base/</text>
+  <text x="492" y="331" fill="#2a2a2a" font-size="6.5">SSH · sysctl · Docker daemon · dirs</text>
+  <text x="370" y="347" fill="#222" font-size="7.5">   ├──</text>
+  <rect x="414" y="338" width="88" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="418" y="348" fill="#666" font-size="6.5">docker-networks/</text>
+  <text x="508" y="347" fill="#2a2a2a" font-size="6.5">idempotent nets</text>
+  <text x="370" y="363" fill="#222" font-size="7.5">   ├──</text>
+  <rect x="414" y="354" width="62" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="418" y="364" fill="#666" font-size="6.5">deploy-arr/</text>
+  <rect x="482" y="354" width="72" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="486" y="364" fill="#666" font-size="6.5">deploy-media/</text>
+  <text x="370" y="379" fill="#222" font-size="7.5">   ├──</text>
+  <rect x="414" y="370" width="112" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="418" y="380" fill="#666" font-size="6.5">deploy-network-stack/</text>
+  <text x="532" y="379" fill="#2a2a2a" font-size="6.5">Pi-hole + cloudflared</text>
+  <text x="370" y="395" fill="#222" font-size="7.5">   └──</text>
+  <rect x="414" y="386" width="104" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="418" y="396" fill="#666" font-size="6.5">deploy-monitoring/</text>
+  <text x="524" y="395" fill="#2a2a2a" font-size="6.5">Prometheus config tmpl</text>
+
+  <!-- Ansible notes -->
+  <line x1="354" y1="408" x2="670" y2="408" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="358" y="422" fill="#2a2a2a" font-size="6.5">· site.yml → full pipeline: base → networks → stacks → monitoring</text>
+  <text x="358" y="436" fill="#2a2a2a" font-size="6.5">· provision-unraid.yml → base host config only (no stack deploy)</text>
+  <text x="358" y="450" fill="#2a2a2a" font-size="6.5">· deploy-stacks.yml → stack deployment only (skips base config)</text>
+  <text x="358" y="464" fill="#2a2a2a" font-size="6.5">· group_vars/unraid.yml → vault-encrypted secrets + host-specific vars</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TDARR PANEL  x=696 y=76 w=364 h=108           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-orange)">
+    <rect x="696" y="76" width="364" height="108" rx="6" fill="#0f0f0f" stroke="#F38020" stroke-width="1"/>
+  </g>
+  <rect x="696" y="76" width="6" height="108" rx="3" fill="#F38020" opacity="0.9"/>
+  <text x="718" y="95" fill="#F38020" font-size="10" font-weight="bold" letter-spacing="1.5">TDARR/</text>
+  <line x1="714" y1="103" x2="1048" y2="103" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="117" fill="#2a2a2a" font-size="7.5">└── flows/</text>
+  <rect x="786" y="108" width="192" height="13" rx="2" fill="#4A90D9" opacity="0.15" stroke="#4A90D9" stroke-width="0.7"/>
+  <text x="790" y="118" fill="#4A90D9" font-size="6.5">hevc-qsv-transcode.json</text>
+  <line x1="714" y1="129" x2="1048" y2="129" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="143" fill="#555" font-size="7">Intel Quick Sync · hevc_qsv · ICQ 28 · quality 28 · 250+ FPS combined</text>
+  <text x="718" y="157" fill="#333" font-size="6.5">QSV device passthrough · hardware-accelerated HEVC encode</text>
+  <text x="718" y="171" fill="#2a2a2a" font-size="6.5">README.md</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- DOCS PANEL  x=696 y=194 w=364 h=60            -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#soft-shadow)">
+    <rect x="696" y="194" width="364" height="60" rx="6" fill="#0f0f0f" stroke="#2a2a2a" stroke-width="1"/>
+  </g>
+  <rect x="696" y="194" width="6" height="60" rx="3" fill="#555" opacity="0.9"/>
+  <text x="718" y="213" fill="#666" font-size="10" font-weight="bold" letter-spacing="1.5">DOCS/</text>
+  <line x1="714" y1="220" x2="1048" y2="220" stroke="#1e1e1e" stroke-width="1"/>
+  <rect x="718" y="227" width="80" height="13" rx="2" fill="#1e1e1e" stroke="#333" stroke-width="0.7"/>
+  <text x="722" y="237" fill="#555" font-size="6.5">architecture.md</text>
+  <rect x="806" y="227" width="62" height="13" rx="2" fill="#1e1e1e" stroke="#333" stroke-width="0.7"/>
+  <text x="810" y="237" fill="#555" font-size="6.5">services.md</text>
+  <text x="875" y="237" fill="#2a2a2a" font-size="6.5">infra docs · service registry</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- .GITHUB PANEL  x=696 y=264 w=364 h=116        -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#glow-green)">
+    <rect x="696" y="264" width="364" height="116" rx="6" fill="#0f0f0f" stroke="#4ade80" stroke-width="1"/>
+  </g>
+  <rect x="696" y="264" width="6" height="116" rx="3" fill="#4ade80" opacity="0.9"/>
+  <text x="718" y="283" fill="#4ade80" font-size="10" font-weight="bold" letter-spacing="1.5">.GITHUB/WORKFLOWS/</text>
+  <circle cx="1028" cy="276" r="3.5" fill="#4ade80" opacity="0.8"/>
+  <circle cx="1038" cy="276" r="3.5" fill="#4ade80" opacity="0.4"/>
+  <circle cx="1048" cy="276" r="3.5" fill="#4ade80" opacity="0.2"/>
+  <line x1="714" y1="291" x2="1048" y2="291" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="306" fill="#222" font-size="7.5">├──</text>
+  <rect x="742" y="297" width="42" height="13" rx="2" fill="#4ade80" opacity="0.12" stroke="#4ade80" stroke-width="0.6"/>
+  <text x="746" y="307" fill="#4ade80" font-size="6.5">lint.yml</text>
+  <text x="790" y="306" fill="#333" font-size="6.5">ansible-lint · syntax-check · on every push</text>
+  <text x="718" y="322" fill="#222" font-size="7.5">└──</text>
+  <rect x="742" y="313" width="66" height="13" rx="2" fill="#4ade80" opacity="0.12" stroke="#4ade80" stroke-width="0.6"/>
+  <text x="746" y="323" fill="#4ade80" font-size="6.5">validate.yml</text>
+  <text x="814" y="322" fill="#333" font-size="6.5">docker compose config · on every push</text>
+  <line x1="714" y1="334" x2="1048" y2="334" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="348" fill="#2a2a2a" font-size="6.5">Triggers: push · PR · validates compose files + playbook syntax</text>
+  <text x="718" y="362" fill="#1e1e1e" font-size="6.5">Scope: ansible-lint rules · role structure · docker compose config</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ROOT FILES PANEL  x=696 y=390 w=364 h=94      -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <g filter="url(#soft-shadow)">
+    <rect x="696" y="390" width="364" height="94" rx="6" fill="#0f0f0f" stroke="#1e1e1e" stroke-width="1"/>
+  </g>
+  <rect x="696" y="390" width="6" height="94" rx="3" fill="#333" opacity="0.9"/>
+  <text x="718" y="409" fill="#444" font-size="9" font-weight="bold" letter-spacing="1.5">ROOT</text>
+  <line x1="714" y1="416" x2="1048" y2="416" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="430" fill="#222" font-size="7.5">├──</text>
+  <rect x="742" y="421" width="50" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="746" y="431" fill="#555" font-size="6.5">Makefile</text>
+  <text x="798" y="430" fill="#2a2a2a" font-size="6.5">make deploy · make lint · make validate</text>
+  <text x="718" y="446" fill="#222" font-size="7.5">└──</text>
+  <rect x="742" y="437" width="62" height="13" rx="2" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.7"/>
+  <text x="746" y="447" fill="#555" font-size="6.5">README.md</text>
+  <text x="810" y="446" fill="#2a2a2a" font-size="6.5">setup guide · prerequisites · usage</text>
+  <line x1="714" y1="460" x2="1048" y2="460" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="718" y="474" fill="#1e1e1e" font-size="6.5">IaC stack: Ansible · Docker Compose · GitHub Actions CI</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LEGEND -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <rect x="20" y="494" width="1040" height="44" rx="4" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+  <rect x="36" y="504" width="10" height="10" rx="2" fill="#2496ED" opacity="0.5"/>
+  <text x="52" y="513" fill="#555" font-size="7.5">docker-compose</text>
+  <rect x="172" y="504" width="10" height="10" rx="2" fill="#F15A2C" opacity="0.5"/>
+  <text x="188" y="513" fill="#555" font-size="7.5">ansible</text>
+  <rect x="258" y="504" width="10" height="10" rx="2" fill="#F38020" opacity="0.5"/>
+  <text x="274" y="513" fill="#555" font-size="7.5">tdarr / QSV</text>
+  <rect x="368" y="504" width="10" height="10" rx="2" fill="#4ade80" opacity="0.5"/>
+  <text x="384" y="513" fill="#555" font-size="7.5">CI / GitHub Actions</text>
+  <rect x="506" y="504" width="10" height="10" rx="2" fill="#4A90D9" opacity="0.5"/>
+  <text x="522" y="513" fill="#555" font-size="7.5">Intel QSV</text>
+  <rect x="608" y="504" width="10" height="10" rx="2" fill="#F15A2C" opacity="0.25" stroke="#F15A2C" stroke-width="0.5"/>
+  <text x="624" y="513" fill="#555" font-size="7.5">vault-encrypted</text>
+  <text x="36" y="531" fill="#222" font-size="7">Minisforum MS-01 · Unraid 7 · Intel Quick Sync · TerraMaster 62TB · UniFi · Cloudflare Zero Trust · omaratabany/Home-Lab-Infra-as-code</text>
+
+  <!-- Bottom accent line -->
+  <line x1="0" y1="565" x2="1080" y2="565" stroke="#F15A2C" stroke-width="1.5" opacity="0.3"/>
+</svg>
