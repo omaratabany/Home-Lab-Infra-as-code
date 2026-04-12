@@ -12,49 +12,7 @@ Self-hosted media, productivity, automation, and networking stack running on **U
 
 ## Repository Structure
 
-```
-Home-Lab-Infra-as-code/
-├── docker-compose/
-│   ├── media-stack/          Plex, Jellyfin, arr suite, Tdarr (QSV), Tautulli
-│   ├── productivity/         AFFiNE, NocoDB, NocoBase
-│   ├── automation/           n8n
-│   ├── networking/           Cloudflare Tunnel, Unraid Config Guardian
-│   ├── monitoring/           Prometheus, Grafana, Node Exporter, Uptime Kuma
-│   ├── mail/                 Docker Mailserver (Postfix/Dovecot)
-│   └── utilities/            Krusader, JDownloader2, Video Duplicate Finder
-├── ansible/
-│   ├── ansible.cfg
-│   ├── requirements.yml
-│   ├── inventory/
-│   │   ├── hosts.yml
-│   │   └── group_vars/
-│   │       ├── all.yml       Shared vars: paths, PUID/PGID, TZ, domain
-│   │       └── unraid.yml    Host-specific vars + vault-encrypted secrets
-│   ├── playbooks/
-│   │   ├── site.yml          Master playbook -- full provisioning pipeline
-│   │   ├── provision-unraid.yml  Base host config only
-│   │   └── deploy-stacks.yml    Stack deployment only
-│   └── roles/
-│       ├── unraid-base/      SSH hardening, sysctl tuning, Docker daemon, dir scaffold
-│       ├── docker-networks/  Idempotent external network creation
-│       ├── deploy-arr/       arr stack deploy + healthcheck
-│       ├── deploy-media/     media stack deploy + QSV device check
-│       ├── deploy-network-stack/  Pi-hole + cloudflared deploy
-│       └── deploy-monitoring/    monitoring stack + Prometheus config template
-├── tdarr/
-│   ├── flows/
-│   │   └── hevc-qsv-transcode.json
-│   └── README.md
-├── docs/
-│   ├── architecture.md
-│   └── services.md
-├── .github/
-│   └── workflows/
-│       ├── lint.yml          ansible-lint + syntax check on every push
-│       └── validate.yml      docker compose config on every push
-├── Makefile
-└── README.md
-```
+[![Infrastructure IAC Diagram](./infra iac.svg)]
 
 ---
 
