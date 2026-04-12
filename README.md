@@ -6,13 +6,13 @@ Self-hosted media, productivity, automation, and networking stack running on **U
 
 ## Architecture Overview
 
-[![Infrastructure Diagram](./infra.svg)]
+![Infrastructure Diagram](./infra.svg)
 
 ---
 
 ## Repository Structure
 
-[![Infrastructure IAC Diagram](./infra iac.svg)]
+![Infrastructure Diagram](./infra-iac.svg)
 
 ---
 
