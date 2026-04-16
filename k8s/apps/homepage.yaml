@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homepage
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://jameswynn.github.io/helm-charts
+    chart: homepage
+    targetRevision: 1.2.3
+    helm:
+      releaseName: homepage
+      values: |
+        image:
+          repository: ghcr.io/gethomepage/homepage
+          tag: latest
+        serviceAccount:
+          create: true
+        enableRbac: true
+        config:
+          kubernetes:
+            mode: cluster
+          services:
+            - Infrastructure:
+                - ArgoCD:
+                    href: http://argocd.192.168.0.134.nip.io
+                    icon: argocd
+                    namespace: argocd
+                    app: argocd-server
+                - Grafana:
+                    href: http://grafana.192.168.0.134.nip.io
+                    icon: grafana
+                    namespace: monitoring
+                    app: kube-prometheus-stack-grafana
+                - Kubernetes Dashboard:
+                    href: http://dashboard.192.168.0.134.nip.io
+                    icon: kubernetes-dashboard
+                    namespace: kubernetes-dashboard
+                    app: kubernetes-dashboard
+          widgets:
+            - kubernetes:
+                cluster:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+                  label: homelab
+                nodes:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: homepage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
