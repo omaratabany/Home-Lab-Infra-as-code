@@ -26,18 +26,20 @@ spec:
           services:
             - Infrastructure:
                 - ArgoCD:
-                    href: http://argocd.192.168.0.134.nip.io
+                    href: http://argocd.homelab:31837
                     icon: argocd
                     namespace: argocd
                     app: argocd-server
                 - Grafana:
-                    href: http://grafana.192.168.0.134.nip.io
+                    href: http://grafana.homelab:31837
                     icon: grafana
+                    url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
                     namespace: monitoring
                     app: kube-prometheus-stack-grafana
                 - Kubernetes Dashboard:
-                    href: http://dashboard.192.168.0.134.nip.io
+                    href: http://dashboard.homelab:31837
                     icon: kubernetes-dashboard
+                    url: http://kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local
                     namespace: kubernetes-dashboard
                     app: kubernetes-dashboard
           widgets:
