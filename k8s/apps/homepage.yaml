@@ -28,20 +28,19 @@ spec:
                 - ArgoCD:
                     href: http://argocd.homelab:31837
                     icon: argocd
-                    namespace: argocd
-                    app: argocd-server
+                    description: GitOps controller
                 - Grafana:
                     href: http://grafana.homelab:31837
                     icon: grafana
-                    url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
-                    namespace: monitoring
-                    app: kube-prometheus-stack-grafana
+                    description: Metrics and dashboards
                 - Kubernetes Dashboard:
                     href: http://dashboard.homelab:31837
                     icon: kubernetes-dashboard
-                    url: http://kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local
-                    namespace: kubernetes-dashboard
-                    app: kubernetes-dashboard
+                    description: Cluster management
+                - Prometheus:
+                    href: http://prometheus.homelab:31837
+                    icon: prometheus
+                    description: Metrics collection
           widgets:
             - kubernetes:
                 cluster:
