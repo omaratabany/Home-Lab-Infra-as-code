@@ -12,6 +12,8 @@ spec:
     helm:
       releaseName: homepage
       values: |
+        env:
+          HOMEPAGE_ALLOWED_HOSTS: "home.homelab:31837,home.homelab"
         image:
           repository: ghcr.io/gethomepage/homepage
           tag: latest
