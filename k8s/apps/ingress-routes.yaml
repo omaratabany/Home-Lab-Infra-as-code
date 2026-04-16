@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: grafana.192.168.0.200.nip.io
+    - host: grafana.homelab
       http:
         paths:
           - path: /
@@ -18,7 +18,7 @@ spec:
                 name: kube-prometheus-stack-grafana
                 port:
                   number: 80
-    - host: prometheus.192.168.0.200.nip.io
+    - host: prometheus.homelab
       http:
         paths:
           - path: /
@@ -40,7 +40,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: argocd.192.168.0.200.nip.io
+    - host: argocd.homelab
       http:
         paths:
           - path: /
@@ -62,7 +62,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: dashboard.192.168.0.200.nip.io
+    - host: dashboard.homelab
       http:
         paths:
           - path: /
@@ -83,7 +83,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: home.192.168.0.200.nip.io
+    - host: home.homelab
       http:
         paths:
           - path: /
