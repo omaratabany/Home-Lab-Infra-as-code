@@ -38,6 +38,9 @@ spec:
             repoURL: https://grafana.github.io/helm-charts
             chart: loki-stack
             version: 2.10.2
+            helmValues: |
+              loki:
+                isDefault: false
   template:
     metadata:
       name: '{{name}}'
@@ -49,6 +52,7 @@ spec:
         targetRevision: '{{version}}'
         helm:
           releaseName: '{{name}}'
+          values: '{{helmValues}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
